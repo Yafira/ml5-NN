@@ -18,6 +18,7 @@ function setup() {
 function keyPressed() {
 
     if (key == 't') {
+        model.normalizeData()
        let options = {
           epochs: 100 
        } 
