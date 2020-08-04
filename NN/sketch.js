@@ -1,5 +1,6 @@
 let model;
 let targetLabel = 'C';
+// let trainingData = [];
 
 function setup() {
     createCanvas(400, 400);
@@ -7,18 +8,47 @@ function setup() {
     let options = {
         inputs: ['x', 'y'],
         outputs: ['label'],
-        task: 'classification'
+        task: 'classification',
+        debug: 'true'
     };
     model = ml5.neuralNetwork(options);
     background(255);
 }
 
 function keyPressed() {
-    targetLabel = key.toUpperCase();
+
+    if (key == 't') {
+       let options = {
+          epochs: 100 
+       } 
+        model.train(options, whileTraining, finishedTraining);
+    } else {
+        targetLabel = key.toUpperCase();
+    }
+}
+
+function whileTraining(epoch, loss) {
+    console.log(epoch);
+}
+
+function finishedTraining() {
+    console.log('finished training.');
+
 }
 
 // collect training data
 function mousePressed() {
+
+    let inputs = {
+        x: mouseX,
+        y: mouseY
+    }
+
+    let target = {
+        label: targetLabel
+    }
+
+    model.addData(inputs, target);
 
     stroke(0);
     noFill();
