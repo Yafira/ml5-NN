@@ -23,10 +23,12 @@ function keyPressed() {
         state = 'training';
         console.log('starting training');
         model.normalizeData();
+
        let options = {
           epochs: 200 
        } 
         model.train(options, whileTraining, finishedTraining);
+
     } else {
         targetLabel = key.toUpperCase();
     }
@@ -48,13 +50,22 @@ function mousePressed() {
         x: mouseX,
         y: mouseY
     }
+
     if (state == 'collection') {
-    let target = {
-        label: targetLabel
+        let target = {
+            label: targetLabel
     }
     model.addData(inputs, target);
-} else if (state == 'prediction') {
+    stroke(0);
+    noFill();
+    ellipse(mouseX, mouseY, 24);
+    fill(0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    text(targetLabel, mouseX, mouseY);  
+    } else if (state == 'prediction') {
     model.classify(inputs, gotResults);
+
     }
 }
 
@@ -64,4 +75,12 @@ function gotResults(error, results) {
         return;
     }
     console.log(results);
+    stroke(0);
+    fill(0, 0, 255, 100);
+    ellipse(mouseX, mouseY, 24);
+    fill(0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    text(results[0].label, mouseX, mouseY);
+    
 }
