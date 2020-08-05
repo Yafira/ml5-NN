@@ -2,6 +2,8 @@ let model;
 let targetLabel = 'C';
 // let trainingData = [];
 
+let state = 'collection';
+
 function setup() {
     createCanvas(400, 400);
 
@@ -18,9 +20,11 @@ function setup() {
 function keyPressed() {
 
     if (key == 't') {
-        model.normalizeData()
+        state = 'training';
+        console.log('starting training');
+        model.normalizeData();
        let options = {
-          epochs: 100 
+          epochs: 200 
        } 
         model.train(options, whileTraining, finishedTraining);
     } else {
@@ -34,7 +38,7 @@ function whileTraining(epoch, loss) {
 
 function finishedTraining() {
     console.log('finished training.');
-
+    state = 'prediction';
 }
 
 // collect training data
@@ -44,18 +48,20 @@ function mousePressed() {
         x: mouseX,
         y: mouseY
     }
-
+    if (state == 'collection') {
     let target = {
         label: targetLabel
     }
-
     model.addData(inputs, target);
+} else if (state == 'prediction') {
+    model.classify(inputs, gotResults);
+    }
+}
 
-    stroke(0);
-    noFill();
-    ellipse(mouseX, mouseY, 24);
-    fill(0);
-    noStroke();
-    textAlign(CENTER, CENTER);
-    text(targetLabel, mouseX, mouseY);
+function gotResults(error, results) {
+    if (error) {
+        console.error(error);
+        return;
+    }
+    console.log(results);
 }
